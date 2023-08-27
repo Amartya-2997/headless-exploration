@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tabular Report</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    #reportTable {
+      border-collapse: collapse;
+      width: 100%;
+      border: 1px solid #ddd;
+    }
+
+    #reportTable th,
+    #reportTable td {
+      padding: 8px;
+      text-align: left;
+      border: 1px solid #ddd;
+      /* Add border to all sides */
+    }
+
+    #reportTable th {
+      background-color: #f2f2f2;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>Title of the preview page</h2>
+  <table id="reportTable">
+    <thead>
+      <tr>
+        <th>Unique Identifier</th>
+        <th>Component Content details</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Table content will be added here dynamically -->
+    </tbody>
+  </table>
+
+  <script>
+    const jsonData = {
+      "data": {
+        "screenByPath": {
+          "item": {
+            "_path": "/content/dam/global/testfolder/",
+            "pageTitle": "Premier mortgages",
+            "pageImage": {},
+            "sections": [
+              {
+                "items": [
+                  {
+                    "contentTags": null,
+                    "contentKey": null,
+                    "icon": null,
+                    "title": "Exclusive mortgage optic",
+                    "description": "",
+                    "actions": [{
+                      "label":"bjb",
+                      "href":"bdjsb"
+                    }]
+                  },
+                  {
+                    "contentTags": null,
+                    "contentKey": null,
+                    "icon": null,
+                    "title": null,
+                    "description": "",
+                    "actions": []
+                  }
+                ]
+              }
+            ],
+            "pageAction": {
+              "href": "",
+              "label": ""
+            }
+          }
+        }
+      }
+    };
+
+    const tableBody = document.querySelector("#reportTable tbody");
+
+    function getActionDetails(actionList) {
+      let actionComponent="";
+      actionList.forEach((item,index)=>{
+        actionComponent+=`<b>Action_${index+1}</b> (label= ${item.label || "NA"} href= ${item.href || "NA"} ariaLabel= ${item.ariaLabel || "NA"})</br>`;
+      });
+      return actionComponent;
+    }
+
+    function generateRows(data, sectionIndex) {
+      data.forEach((item, index) => {
+        const newRow = document.createElement("tr");
+        newRow.innerHTML = `
+          <td>Section_${sectionIndex + 1}_Component_${index + 1}</td>
+          <td>
+            <b>ContentKey</b> ${item.contentKey || "NA"}</br>
+            <b>title</b> ${item.title || "NA"}</br>
+            <b>Description</b> ${item.description.plaintext || "NA"}</br>
+            <b>Actions</b></br> &nbsp ${getActionDetails(item.actions)}</br>
+          </td>
+        `;
+        tableBody.appendChild(newRow);
+      });
+    }
+
+    const newRow = document.createElement("tr");
+    newRow.innerHTML = `
+          <td>Page_Image</td>
+          <td>
+            <b>Path</b> ${jsonData.data.screenByPath?.pageImage?.path || "NA"}</br>
+            <b>Alt title</b> ${jsonData.data.screenByPath?.pageImage?.altTitle || "NA"}</br>
+          </td>
+        `;
+    tableBody.appendChild(newRow);
+
+    jsonData.data.screenByPath.item.sections.forEach((item, index) => {
+      alert(item);
+      generateRows(item.items, index);
+
+    });
+  </script>
+</body>
+
+</html>
